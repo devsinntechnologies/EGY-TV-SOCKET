@@ -1,7 +1,7 @@
 const express = require('express');
 const Video = require('./models/video')
 const app = express();
-const port = 3000;
+const port = 5000;
 const http = require('http').createServer(app);
 const cors = require('cors');
 const VideoRoutes =require("./routes/video")
