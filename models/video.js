@@ -2,7 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../db/index");
 
 const Video = sequelize.define(
-  "video",
+  "video_chunks",
   {
     // Model attributes are defined here
     id: {

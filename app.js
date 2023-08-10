@@ -65,7 +65,7 @@ function playNextVideo() {
 
 http.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-    loadVideoQueue();
+    // loadVideoQueue();
   });
     io.on('connection', async(socket) => {
     console.log('A new client has joined.');
@@ -92,3 +92,9 @@ http.listen(port, () => {
   //   console.error('Error fetching recent videos:', error);
   // }
   });
+  //  sequelize.sync({force:true}).then(result=>{
+  //   console.log(result)
+  
+  // }).catch(err=>{
+  //   console.log(err)
+  // });
