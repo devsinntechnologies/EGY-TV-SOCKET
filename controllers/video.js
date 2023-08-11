@@ -120,5 +120,28 @@ function transcodeVideo(inputFilePath, outputFilePath, videoName) {
       console.log(err)
     });
   }
+
+  
+  const deleteOne = (req,res,next) => {
+    try {
+      Video.findByPk(req.params.id)
+        .then((val) => {
+          return val.destroy();
+        })
+        .then((result) => {
+          res.status(200).json({
+            success: true,
+            message: "Data Delete Successfully!",
+            result: result,
+          });
+        })
+        .catch((err) => {
+          return next(new HttpError("Data not Found!", 200));
+        });
+    } catch (error) {
+      new HttpError("Something Went Wrong Please Try Later.", 500);
+    }
+  };
   exports.addVideo = addVideo;
   exports.getAll = getAll;
+  exports.deleteOne  = deleteOne ;
