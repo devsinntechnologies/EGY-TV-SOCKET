@@ -22,7 +22,7 @@ function transcodeVideo(inputFilePath, outputFilePath, videoName) {
         '-reset_timestamps 1',
         '-map 0',
       ])
-      .output(`${outputFilePath}/${videoName}%#%d.mp4`)
+      .output(`${outputFilePath}/${videoName}#%d.mp4`)
       .on('end', async() => {
         console.log('HLS transcoding complete!');
         fs.unlinkSync(inputFilePath); // Remove the original video file after processing
@@ -30,8 +30,8 @@ function transcodeVideo(inputFilePath, outputFilePath, videoName) {
         // Get all the files in the output directory with the videoName in their filenames
         const files = fs.readdirSync(outputFilePath).filter(file => file.includes(videoName));
         files.sort((a, b) => {
-          const numA = parseInt(a.split('%#')[1].split('.')[0]);
-          const numB = parseInt(b.split('%#')[1].split('.')[0]);
+          const numA = parseInt(a.split('#')[1].split('.')[0]);
+          const numB = parseInt(b.split('#')[1].split('.')[0]);
           return numA - numB;
         });
         
