@@ -12,7 +12,7 @@ const io = require('socket.io')(http, {
     methods: ['GET', 'POST'],
   },
 });
-const outputDirectory = './uploads';
+const outputDirectory = '../uploads';
 app.use(cors())
 app.use('/video',VideoRoutes);
 let videoQueue = [];

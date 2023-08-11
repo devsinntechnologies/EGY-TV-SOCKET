@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const crypto = require("crypto");
 const Video = require('../models/video')
-const outputDirectory = './uploads';
+const outputDirectory = '../uploads';
 function getVideoDuration(filePath) {
     // Use ffprobe to get the duration of a video file
     const result = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', filePath]);
