@@ -5,15 +5,29 @@ const fs = require('fs');
 const crypto = require("crypto");
 const Video = require('../models/video')
 const outputDirectory = '../uploads';
-function getVideoDuration(filePath) {
-    // Use ffprobe to get the duration of a video file
-    const result = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', filePath]);
-    if (result.error || result.status !== 0) {
-      console.error(`Error getting duration for ${filePath}`);
-      return 0;
-    }
-    return parseFloat(result.stdout.toString());
+const { getVideoDurationInSeconds } = require('get-video-duration')
+async function getVideoDuration(filePath) {
+  try {
+    const durationInSeconds = await getVideoDurationInSeconds(filePath);
+    console.log(durationInSeconds)
+    // Parse the duration to an integer (if necessary)
+    const duration = parseInt(durationInSeconds);
+    return duration;
+  } catch (error) {
+    console.error(`Error getting duration for ${filePath}:`, error);
+    return 0; // Return 0 in case of an error
   }
+}
+// function getVideoDuration(filePath) {
+ 
+//     // Use ffprobe to get the duration of a video file
+//     const result = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'default=noprint_wrappers=1:nokey=1', filePath]);
+//     if (result.error || result.status !== 0) {
+//       console.error(`Error getting duration for ${filePath}`);
+//       return 0;
+//     }
+//     return parseFloat(result.stdout.toString());
+//   }
 function transcodeVideo(inputFilePath, outputFilePath, videoName) {
     ffmpeg(inputFilePath)
       .outputOptions([
@@ -54,18 +68,20 @@ function transcodeVideo(inputFilePath, outputFilePath, videoName) {
         for (const file of files) {
             const id = crypto.randomBytes(16).toString("hex");
             const filePath = path.join(outputFilePath, file);
-            const duration = getVideoDuration(filePath);
+            const duration = await getVideoDuration(filePath);
             await new Promise((resolve) => setTimeout(resolve, 1000));
             try {
+              console.log("outside")
+              console.log(duration)
               // Create a new record in the database for each chunk
               const newChunk = await Video.create({
                 id: id,
                 name: file,
                 duration: duration,
-                // Other properties you might have
+                
               });
       
-              chunksInfo.push({ name: file, duration: duration });
+              // chunksInfo.push({ name: file, duration: duration });
               console.log(`Chunk ${file} added to the database.`);
             } catch (error) {
               console.error(`Error adding chunk ${file} to the database:`, error);
