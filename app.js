@@ -25,7 +25,7 @@ async function loadVideoQueue() {
     videoQueue = await Video.findAll({
       order: [['createdAt', 'ASC']],
     });
-    
+    console.log(videoQueue)
     if (videoQueue.length > 0) {
       videoDuration = videoQueue[0].dataValues.duration;
       videoLinks = {
@@ -65,7 +65,7 @@ function playNextVideo() {
 
 http.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-    // loadVideoQueue();
+     loadVideoQueue();
   });
     io.on('connection', async(socket) => {
     console.log('A new client has joined.');
