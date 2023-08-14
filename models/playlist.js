@@ -1,24 +1,15 @@
 // Assuming you have Sequelize and the necessary setup already in place
 const { DataTypes } = require('sequelize');
 const sequelize = require("../db/index");
-const Playlist = require('./playlist');
-const  VideoChunks = require('./video_chunks');
+const Video = require('./video');
 
-const Video = sequelize.define('Video', {
+const Playlist = sequelize.define('Playlist', {
   id: {
     type: DataTypes.STRING,
     primaryKey: true,
   },
-  videoLink: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   name: {
     type: DataTypes.STRING,
-    allowNull: false,
-  },
-  order: {
-    type: DataTypes.INTEGER,
     allowNull: false,
   },
   created_at: {
@@ -33,12 +24,13 @@ const Video = sequelize.define('Video', {
   },
 }, {
   // Define the table name
-  tableName: 'videos',
+  tableName: 'playlists',
   // Disable automatic creation of createdAt and updatedAt fields
   timestamps: false,
 });
 
+// Define associations after all models are defined
+Playlist.hasMany(Video, { as: 'videos', foreignKey: 'playlistId' });
+// Video.belongsTo(Playlist, { as: 'playlist', foreignKey: 'playlistId' });
 
-Video.hasMany(VideoChunks, { as: 'video_chunks', foreignKey: 'videoId' });
-
-module.exports = Video;
+module.exports = Playlist;

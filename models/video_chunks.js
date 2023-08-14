@@ -1,44 +1,42 @@
-// Assuming you have Sequelize and the necessary setup already in place
+
 const { DataTypes } = require('sequelize');
 const sequelize = require("../db/index");
-const Playlist = require('./playlist');
-const  VideoChunks = require('./video_chunks');
+const Video = require('./video');
 
-const Video = sequelize.define('Video', {
+const VideoChunks = sequelize.define('VideoChunks', {
   id: {
     type: DataTypes.STRING,
     primaryKey: true,
-  },
-  videoLink: {
-    type: DataTypes.STRING,
-    allowNull: false,
   },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  order: {
+  duration: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    field: 'created_at', // Set the field name in the database
+    defaultValue: DataTypes.NOW,
   },
   updated_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    field: 'updated_at', // Set the field name in the database
+    defaultValue: DataTypes.NOW,
   },
 }, {
   // Define the table name
-  tableName: 'videos',
+  tableName: 'video_chunks',
   // Disable automatic creation of createdAt and updatedAt fields
   timestamps: false,
 });
 
 
-Video.hasMany(VideoChunks, { as: 'video_chunks', foreignKey: 'videoId' });
+// // Define associations after all models are defined
+// VideoChunks.associate = () => {
+//   VideoChunks.belongsTo(Video, { as: 'video', foreignKey: 'videoId', onDelete: 'CASCADE' });
+// };
 
-module.exports = Video;
+module.exports =  VideoChunks;

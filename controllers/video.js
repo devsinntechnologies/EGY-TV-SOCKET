@@ -3,7 +3,7 @@ const { spawnSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 const crypto = require("crypto");
-const Video = require('../models/video')
+const Video = require('../models/video_chunks')
 const outputDirectory = '../uploads';
 const { getVideoDurationInSeconds } = require('get-video-duration')
 async function getVideoDuration(filePath) {
