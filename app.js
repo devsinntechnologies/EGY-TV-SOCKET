@@ -19,14 +19,26 @@ let videoQueue = [];
 let currentVideoIndex = 0;
 let videoLinks={}
 let videoDuration=0;
+let playlistInterval;
+let playlistTimeout;
 app.use(cors())
 app.get('/runPlaylist/:id', async(req, res) => {
   const playlistId = req.params.id
   loadVideoQueue(playlistId);
   res.json({ message: 'Video playlist is now running.'});
 });
-
+app.get('/stopPlaylist', (req, res) => {
+  videoQueue = [];
+  currentVideoIndex = 0;
+  clearTimeout(playlistTimeout);
+  clearInterval(playlistInterval);
+  io.emit('playlist_stopped');
+  res.json({ message: 'Video playlist has been stopped.' });
+});
 async function loadVideoQueue(playlistId) {
+  videoQueue = []; // Clear existing video queue
+  clearInterval(playlistInterval);
+  clearTimeout(playlistTimeout);
   try {
   const playlist = await Playlist.findByPk(playlistId, {
     include: [
@@ -51,7 +63,6 @@ async function loadVideoQueue(playlistId) {
 
     videoQueue.push(...video.video_chunks);
   });
-    console.log(playlist)
     if (videoQueue.length > 0) {
       videoDuration = videoQueue[0].duration;
       videoLinks = {
@@ -59,11 +70,11 @@ async function loadVideoQueue(playlistId) {
         nextVideoLink: videoQueue[currentVideoIndex+1].name,
       };
     }
-    setInterval(() => {
+    playlistInterval = setInterval(() => {
       io.emit('video_links', videoLinks);
     }, 1000);
-
-    setTimeout(playNextVideo, videoDuration * 1000);
+  
+    playlistTimeout = setTimeout(playNextVideo, videoDuration * 1000);
   } catch (error) {
     console.error('Error fetching videos:', error);
   }
@@ -86,7 +97,7 @@ function playNextVideo() {
       nextVideoLink: videoQueue[currentVideoIndex+1].name,
     }
   }
-  setTimeout(playNextVideo, videoDuration * 1000);
+  playlistTimeout = setTimeout(playNextVideo, videoDuration * 1000);
 }
 
 http.listen(port, () => {
