@@ -12,10 +12,15 @@ const Playlist = sequelize.define('Playlist', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  isRunning: {
+    type: DataTypes.BOOLEAN,
+    allowNull: true,
+    defaultValue: false,
+  },
   created_at: {
     type: DataTypes.DATE,
     allowNull: false,
-    field: 'created_at', // Set the field name in the database
+    field: 'created_at',
   },
   updated_at: {
     type: DataTypes.DATE,

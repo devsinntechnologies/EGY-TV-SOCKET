@@ -1,13 +1,13 @@
 const Sequelize=require('sequelize')
-const sequelize = new Sequelize('egy_us_dev', 'Stevprog', 'Arham786', {
-    host: 'egy-us-dev.cfriqrksbe5r.us-east-1.rds.amazonaws.com',
-    port: 3306,
-    dialect : 'mysql',
-  });
-// const sequelize = new Sequelize('eygpt-tv', 'root', '', {
-//   host: "127.0.0.1",
+// const sequelize = new Sequelize('egy_us_dev', 'Stevprog', 'Arham786', {
+//     host: 'egy-us-dev.cfriqrksbe5r.us-east-1.rds.amazonaws.com',
+//     port: 3306,
 //     dialect : 'mysql',
 //   });
+const sequelize = new Sequelize('eygpt-tv', 'root', '', {
+  host: "127.0.0.1",
+    dialect : 'mysql',
+  });
   sequelize.authenticate().then(function(){
         console.log("connection Established.");
       }).catch(function(error){

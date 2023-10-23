@@ -24,16 +24,25 @@ let playlistTimeout;
 app.use(cors())
 app.get('/runPlaylist/:id', async(req, res) => {
   const playlistId = req.params.id
+  await Playlist.update({ isRunning: true }, { where: { id: playlistId } });
   loadVideoQueue(playlistId);
   res.json({ message: 'Video playlist is now running.'});
 });
-app.get('/stopPlaylist', (req, res) => {
+app.get('/stopPlaylist', async(req, res) => {
   videoQueue = [];
   currentVideoIndex = 0;
   clearTimeout(playlistTimeout);
   clearInterval(playlistInterval);
-  io.emit('playlist_stopped');
-  res.json({ message: 'Video playlist has been stopped.' });
+  try {
+    // Update the row where isRunning is true to false
+    await Playlist.update({ isRunning: false }, { where: { isRunning: true } });
+
+    io.emit('playlist_stopped');
+    res.json({ message: 'Video playlist has been stopped.' });
+  } catch (error) {
+    console.error('Error stopping playlist:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
 async function loadVideoQueue(playlistId) {
   videoQueue = []; // Clear existing video queue
@@ -70,6 +79,7 @@ async function loadVideoQueue(playlistId) {
         nextVideoLink: videoQueue[currentVideoIndex+1].name,
       };
     }
+    console.log(videoLinks,'videolinls')
     playlistInterval = setInterval(() => {
       io.emit('video_links', videoLinks);
     }, 1000);
