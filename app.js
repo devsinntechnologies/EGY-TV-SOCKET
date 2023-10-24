@@ -24,6 +24,11 @@ let playlistTimeout;
 app.use(cors())
 app.get('/runPlaylist/:id', async(req, res) => {
   const playlistId = req.params.id
+    videoQueue = [];
+  currentVideoIndex = 0;
+  clearTimeout(playlistTimeout);
+  clearInterval(playlistInterval);
+  await Playlist.update({ isRunning: false }, { where: { isRunning: true } });
   await Playlist.update({ isRunning: true }, { where: { id: playlistId } });
   loadVideoQueue(playlistId);
   res.json({ message: 'Video playlist is now running.'});
